@@ -74,11 +74,11 @@ for i in onlyfiles:
      'Kicks',
      'General Play T/Overs',
      'Lineouts',
-     'Own Won',
-     'Own Lost',
+     'Lineouts Won',
+     'Lineouts Lost',
      'Scrums',
-     'Own Won',
-     'Own Lost',
+     'Scrums Won',
+     'Scrums Lost',
      'Restarts',
      'Long',
      'Short',
@@ -201,16 +201,31 @@ for i in onlyfiles:
 
     # Append each match to FinalDF
     FinalDF = FinalDF.append(df2, ignore_index=True)
+########################################################################
 
-# In[747]:
-#  STILL NOT WORKING - MESSING UP THE COLUMNS, CREATING NEW ONES
-#  reorder columns for better readability
-#recols = ['Team', 'Date', 'Tournament', 'Match', 'Possession Time', 'Scores', 'Tries', 'Conversions', 'Passes',
-#'Tackle_Ruck_Mauls', 'Retained', 'T-Overs Won', 'General Play T/Overs',
-#'Lineouts', 'Own Won', 'Own Lost', 'Scrums', 'Own Won', 'Own Lost',
-#'Short', 'Regained', 'Pens_Frees Against', 'Ruck_Maul',
-#'Yellow_Red Cards']
-#FinalDF = FinalDF[recols]
+# columns to drop
+# Lineouts - 'Own Lost', Scrums - 'Own Lost', 'Ruck_Maul'
+
+# columns to calculate
+# Tackle_Ruck_Mauls/Retained = Ruck Retention, Lineouts/Own Won = Own_Lineout_Win, Scrums/Own Won = Own_Scrum_Win, short/regained = own_contestable restarts won
+    
+# Add TOs and GenPlayTOs?
+
+# Calculate derived columns
+FinalDF['Ruck_retention'] = FinalDF['Retained'] / FinalDF['Tackle_Ruck_Mauls']
+FinalDF['Lineout_Win_Pct'] = FinalDF['Lineouts Won'] / FinalDF['Lineouts']
+FinalDF['Scrum_Win_Pct'] = FinalDF['Scrums Won'] / FinalDF['Scrums']
+
+# Drop columns used to create derived columns
+FinalDF = FinalDF.drop(['Retained', 'Tackle_Ruck_Mauls', 'Lineouts Won','Lineouts', 'Scrums Won', 'Scrums', 'Lineouts Lost', 'Scrums Lost'], axis=1)
+
+FinalDF = FinalDF[['Team', 'Date','Tournament', 'Match', 'Possession Time', 'Scores', 'Tries', 'Conversions', 'Passes','T-Overs Won', 'General Play T/Overs', 'Short', 'Regained', 'Pens_Frees Against', 'Ruck_Maul', 'Yellow_Red Cards', 'Ruck_retention', 'Lineout_Win_Pct','Scrum_Win_Pct']]
+
+# Get the differnce between the USA and their opposition
+# If 'Team'='USA' AND TOURNAMENT and MATCH are ==
+
+
+
 # Write the Dataframe to a CSV
 FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
 
