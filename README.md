@@ -81,7 +81,7 @@ After a classification model is built and trained, techniques such as feature im
 ### Training data
 Each ‘core’ team plays a minimum of four matches and a maximum of six matches in a tournament, over the course of 10 tournaments.  This results in a range of 40-60 matches of the course of the series.  In the 2016-17 Series, the team played a total of 57 matches.
 
-The team’s 57 matches from 2016-17 will be split into test and training sets.
+The team’s 57 matches from 2016-17, as well as matches from 2015-16, and 2017-18 will be split into test and training sets.
 
 ### Deliverables
 
