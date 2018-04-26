@@ -27,11 +27,11 @@ According to the official web site, “The HSBC World Rugby Sevens series consis
 
 Each tournament features 16 teams, distributed into four pools of four teams, with 45 matches being played over a two- or three-day period, depending on the tournament. Each team plays every other team in it’s pool, then the top two teams in the pool standings progress to the Cup playoff round, the bottom two progress to the Challenge playoff round.  Series points are awarded for the final finishing place in the tournament, and an overall World Rugby Sevens Series champion is determined based on the total number of points earned from all tournaments over the Series.
 
-###Solution Approach
+### Solution Approach
 
 The planned approach for solving this problem is to build a supervised machine-learning model to classify each of the team’s match outcome as a win or a loss.  The outcome variable will be derived from the point differential (‘scores’ variable) between the team and their opponent.
 
-###Predictor Variables
+### Predictor Variables
 Predictor variables include the variables contained in the match data scraped from each of the team’s the Single Match Summary report from World Rugby:
 
 ['Possession Time',
@@ -82,14 +82,15 @@ After a classification model is built and trained, techniques such as feature im
 Each ‘core’ team plays a minimum of four matches and a maximum of six matches in a tournament, over the course of 10 tournaments.  This results in a range of 40-60 matches of the course of the series.  In the 2016-17 Series, the team played a total of 57 matches.
 
 The team’s 57 matches from 2016-17 will be split into test and training sets.
-Deliverables
+
+### Deliverables
 
 A GitHub repository will be created, containing this project proposal, as well as the following project deliverables:
 
-•	Python Code
-•	2016-17 HSBC World Rugby Sevens Series data
-•	Output data
-•	Project Presentation
+* Python Code
+* 2016-17 HSBC World Rugby Sevens Series data
+* Output data
+* Project Presentation
 
 
 
