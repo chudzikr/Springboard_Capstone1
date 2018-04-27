@@ -227,18 +227,20 @@ FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
 #In the same manner perform the calculation for other features
 # Get 2 rows at a time and perform the calculation hence check if the index is odd or even and perform calculation only on even rows
 
-# add 'Cards_Diff' back in later ....
-sub = pd.DataFrame(columns=['Opp', 'Date','Tournament', 'Match', 'Poss_Time_Diff', 'Score_Diff', 'Conv_Diff', 'Tries_Diff', 'Passes_Diff', 'Contestable_KO_Win_pct_Diff', 'PenFK_Against_Diff', 'RuckMaul_Diff', 'Ruck_Win_pct_Diff', 'Cards_diff', 'Lineout_Win_Pct_Diff','Scrum_Win_Pct_Diff'])
+# Removed 'date' and 'match' for consistency, as they are not available in Excel reports
+sub = pd.DataFrame(columns=['Opp', 'Tournament', 'Poss_Time_Diff', 'Score_Diff', 'Conv_Diff', 'Tries_Diff', 'Passes_Diff', 'Contestable_KO_Win_pct_Diff', 'PenFK_Against_Diff', 'RuckMaul_Diff', 'Ruck_Win_pct_Diff', 'Cards_diff', 'Lineout_Win_Pct_Diff','Scrum_Win_Pct_Diff'])
 
 for index, row in FinalDF.iterrows():
     if index % 2 == 0:
        new_row = FinalDF.iloc[index+1]
        if row['Team'] == "USA":
            # Get match, date, etc., values
+           # Removed 'date' and 'match' for consistency, as they are not available in Excel reports
            opp = new_row['Team']
-           date = new_row['Date']
+           #date = new_row['Date']
            tourn = new_row['Tournament']
-           match = new_row['Match']
+           #match = new_row['Match']
+
            #Possession Time
            TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
            PossessionUSA = float(row['Possession Time']*100)/TotPossTime
@@ -298,14 +300,15 @@ for index, row in FinalDF.iterrows():
 
            # Create a new now with the difference values
            # Add 'Cards_diff' back in later
-           sub.loc[index] = (opp, date, tourn, match, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+           sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
        if new_row['Team'] == 'USA':
            # Get match, date, etc., values
+           # Removed 'date' and 'match' for consistency, as they are not available in Excel reports
            opp = row['Team']
-           date = row['Date']
+           #date = row['Date']
            tourn = row['Tournament']
-           match = row['Match']
+           #match = row['Match']
 
            #Possession Time
            TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
@@ -366,6 +369,6 @@ for index, row in FinalDF.iterrows():
 
            # Create a new now with the difference values
            # Add 'Cards_diff' back in later
-           sub.loc[index] = (opp, date, tourn, match, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+           sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
 sub.to_csv("../data/output/final_df_v1.csv", header=True, index=False)
