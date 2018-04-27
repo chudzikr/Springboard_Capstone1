@@ -146,13 +146,18 @@ for i in onlyfiles:
     usadf['Lineout_Win_Pct'] =  usadf['Lineout SuccessOwn Throw'] / usadf['Total LineoutsOwn Throw']
     usadf['Scrum_Win_Pct'] =  usadf['Scrum SuccessOwn Feed'] /  usadf['Total ScrumsOwn Feed']
 
+    # Append each match to FinalDF
+    FinalDF = FinalDF.append(usadf, ignore_index=True)
 
     dropcols = ['Total PointsConceded', 'Total TriesConceded','Try Scoring Rate(1 every x secs)',
     'Try Conceding Rate(1 every x secs)', 'Tries Scored Build-Up(No Ruck/Maul)',
     'Tries Conceded Build-Up(No Ruck/Maul)', 'Opp22m Entries', 'Opp22m Entry Rate(1 every  secs)', 'Own22m Entries', 'Own22m Entry Rate(1 every x secs)', 'Tries Scoredper Opp22m Entry',
     'Tries Concededper Own22m Entry', 'Possession Time(Opp)', 'Passing Rate(1 every x secs)', 'Rucking RateAttack (secs)', 'RucksDefence', 'Own RucksWon per Match', '% Ruck SuccessOpp',
     'Opp RucksWon per Match', 'TurnoversConceded', 'TurnoverDifferential', 'OppContestable Restarts', 'Opp ContestableRestarts Received', 'Regained', 'Short', 'Lineout SuccessOwn Throw', 'Total LineoutsOwn Throw', 'Scrum SuccessOwn Feed', 'Total ScrumsOwn Feed']
-    usadf.drop(dropcols, axis=1, inplace=True)
+    FinalDF.drop(dropcols, axis=1, inplace=True)
+
+#    # Append each match to FinalDF
+#    FinalDF = FinalDF.append(usadf, ignore_index=True)
 
     # =============================================================================
     # CONDUCT 'DIFF' OPERATIONS, CREATE NEW DATAFRAME
@@ -201,7 +206,7 @@ for i in onlyfiles:
                 passes_diff = PassesUSA - PassesOpp
 
                 # Contestable_KO_Regained_pct - already a float
-                kopct_diff = row['Contestable_KO_Regained_pct'] -  new_row['Contestable_KO_Regained_pct']
+                kopct_diff = row['Contestable_Restart_Win_Pct'] -  new_row['Contestable_Restart_Win_Pct']
 
                 # Pen-FK
                 TotPenFk = float(row['Pens_Frees Against']) + float(new_row['Pens_Frees Against'])
@@ -268,7 +273,7 @@ for i in onlyfiles:
                 passes_diff = PassesUSA - PassesOpp
 
                 # Contestable_KO_Regained_pct - already a float
-                kopct_diff = row['Contestable_KO_Regained_pct'] - new_row['Contestable_KO_Regained_pct']
+                kopct_diff = row['Contestable_Restart_Win_Pct'] - new_row['Contestable_Restart_Win_Pct']
 
                 # Pen-FK
                 TotPenFk = float(row['Pens_Frees Against']) + float(new_row['Pens_Frees Against'])
@@ -299,16 +304,16 @@ for i in onlyfiles:
 
                 # Create a new now with the difference values
                 # Add 'Cards_diff' back in later
-                sub.loc[index] = (opp, date, tourn, match, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+                sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
 
     # Write the Dataframe to a CSV
     #FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
 
-    sub.to_csv("../data/output/final_df_v1.csv", header=True, index=False)
+    sub.to_csv("../data/output/final_excel_sub_df.csv", header=True, index=False)
 
-        # Append each match to FinalDF
-    FinalDF = FinalDF.append(usadf, ignore_index=True)
+    # Append each match to FinalDF
+    #FinalDF = FinalDF.append(usadf, ignore_index=True)
 # =============================================================================
 
 # In[54]:
@@ -317,4 +322,4 @@ for i in onlyfiles:
 # USe the write mode of 'a' to append
 # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file (see helper function in this page)
 # You can append to a csv by opening the file in append mode, then appending a new DF to it
-usadf.to_csv(path_or_buf='../data/output/worldrugby_game_analysis_all.csv')
+#FinalDF.to_csv(path_or_buf='../data/output/worldrugby_game_analysis_all.csv')
