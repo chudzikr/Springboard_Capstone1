@@ -7,12 +7,8 @@
 # =============================================================================
 # TO DO  - 4/25
 # Solve "Division by Zero" issue
-# Solve Tournament/Match labelling issue (get tournament from file name?)
-#  * Tournament name is listed in the file name, as well as the 'Cover Page' tab, rows 12:13       (merged)
-#  * Don't think I need match number, but if I needed it, could pull from "match results" tab
 # Consolidate column names
 # Create Diff calculations
-# Add code to read all files in a given directory
 # =============================================================================
 
 # In[44]:
@@ -149,168 +145,172 @@ for i in onlyfiles:
     # Append each match to FinalDF
     FinalDF = FinalDF.append(usadf, ignore_index=True)
 
-    dropcols = ['Total PointsConceded', 'Total TriesConceded','Try Scoring Rate(1 every x secs)',
-    'Try Conceding Rate(1 every x secs)', 'Tries Scored Build-Up(No Ruck/Maul)',
-    'Tries Conceded Build-Up(No Ruck/Maul)', 'Opp22m Entries', 'Opp22m Entry Rate(1 every  secs)', 'Own22m Entries', 'Own22m Entry Rate(1 every x secs)', 'Tries Scoredper Opp22m Entry',
-    'Tries Concededper Own22m Entry', 'Possession Time(Opp)', 'Passing Rate(1 every x secs)', 'Rucking RateAttack (secs)', 'RucksDefence', 'Own RucksWon per Match', '% Ruck SuccessOpp',
-    'Opp RucksWon per Match', 'TurnoversConceded', 'TurnoverDifferential', 'OppContestable Restarts', 'Opp ContestableRestarts Received', 'Regained', 'Short', 'Lineout SuccessOwn Throw', 'Total LineoutsOwn Throw', 'Scrum SuccessOwn Feed', 'Total ScrumsOwn Feed']
-    FinalDF.drop(dropcols, axis=1, inplace=True)
-
-#    # Append each match to FinalDF
-#    FinalDF = FinalDF.append(usadf, ignore_index=True)
-
-    # =============================================================================
-    # CONDUCT 'DIFF' OPERATIONS, CREATE NEW DATAFRAME
-    #
-    # Create new dataframe to hold diff values
-    #
-    # =============================================================================
-    # removed 'Date' and 'Match',
-    sub = pd.DataFrame(columns=['Opp', 'Tournament', 'Poss_Time_Diff', 'Score_Diff', 'Conv_Diff', 'Tries_Diff', 'Passes_Diff', 'Contestable_KO_Win_pct_Diff', 'PenFK_Against_Diff', 'RuckMaul_Diff', 'Ruck_Win_pct_Diff', 'Cards_diff', 'Lineout_Win_Pct_Diff','Scrum_Win_Pct_Diff'])
+dropcols = ['Total PointsConceded', 'Total TriesConceded','Try Scoring Rate(1 every x secs)',
+'Try Conceding Rate(1 every x secs)', 'Tries Scored Build-Up(No Ruck/Maul)',
+'Tries Conceded Build-Up(No Ruck/Maul)', 'Opp22m Entries', 'Opp22m Entry Rate(1 every  secs)', 'Own22m Entries', 'Own22m Entry Rate(1 every x secs)', 'Tries Scoredper Opp22m Entry',
+'Tries Concededper Own22m Entry', 'Possession Time(Opp)', 'Passing Rate(1 every x secs)', 'Rucking RateAttack (secs)', 'RucksDefence', 'Own RucksWon per Match', '% Ruck SuccessOpp',
+'Opp RucksWon per Match', 'TurnoversConceded', 'TurnoverDifferential', 'OppContestable Restarts', 'Opp ContestableRestarts Received', 'Regained', 'Short', 'Lineout SuccessOwn Throw', 'Total LineoutsOwn Throw', 'Scrum SuccessOwn Feed', 'Total ScrumsOwn Feed']
+FinalDF.drop(dropcols, axis=1, inplace=True)
 
 
-    for index, row in FinalDF.iterrows():
-         if index % 2 == 0:
-            new_row = FinalDF.iloc[index+1]
-            if row['Team'] == "USA":
-                # Get match, date, etc., values
-                opp = new_row['Team']
-                #date = new_row['Date']
-                tourn = new_row['Tournament']
-                # match = new_row['Match']
-                #Possession Time
-                TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
-                PossessionUSA = float(row['Possession Time']*100)/TotPossTime
-                PossessionOpp = float(new_row['Possession Time']*100)/TotPossTime
-                posess_time_diff = PossessionUSA - PossessionOpp
+# Append each match to FinalDF
+#FinalDF = FinalDF.append(usadf, ignore_index=True)
 
-                # Scores
-                TotScores = float(row['Scores']) + float(new_row['Scores'])
-                ScoresUSA = float(row['Scores']*100)/TotScores
-                ScoresOpp = float(new_row['Scores']*100)/TotScores
-                scores_diff = ScoresUSA - ScoresOpp
+# Write the Dataframe to a CSV to keep a file of initial match output
+FinalDF.to_csv("../data/output/all_Excel_FinalDF_matches.csv", header=True, index=False)
 
-                # Tries
-                TotTries = float(row['Tries']) + float(new_row['Tries'])
-                TriesUSA = float(row['Tries']*100)/TotTries
-                TriesOpp = float(new_row['Tries']*100)/TotTries
-                tries_diff = TriesUSA - TriesOpp
-
-                # Conversions - already a float/pct
-                conv_diff = row['Conversions'] - new_row['Conversions']
-
-                # Passes
-                TotPasses = float(row['Passes']) + float(new_row['Passes'])
-                PassesUSA = float(row['Passes']*100)/TotPasses
-                PassesOpp = float(new_row['Passes']*100)/TotPasses
-                passes_diff = PassesUSA - PassesOpp
-
-                # Contestable_KO_Regained_pct - already a float
-                kopct_diff = row['Contestable_Restart_Win_Pct'] -  new_row['Contestable_Restart_Win_Pct']
-
-                # Pen-FK
-                TotPenFk = float(row['Pens_Frees Against']) + float(new_row['Pens_Frees Against'])
-                PenFkUSA = float(row['Pens_Frees Against']*100)/TotPenFk
-                PenFkOpp = float(new_row['Pens_Frees Against']*100)/TotPenFk
-                PenFk_diff = PenFkUSA - PenFkOpp
-
-                # Ruck-Maul
-                TotRM = float(row['Ruck_Maul']) + float(new_row['Ruck_Maul'])
-                RMUSA = float(row['Ruck_Maul']*100)/TotRM
-                RMOpp = float(new_row['Ruck_Maul']*100)/TotRM
-                RM_diff = RMUSA - RMOpp
-
-                # Cards
-                TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
-                CardsUSA = float(row['Yellow_Red Cards']*100)/TotCards
-                CardsOpp = float(new_row['Yellow_Red Cards']*100)/TotCards
-                Cards_diff = CardsUSA - CardsOpp
-
-                # Ruck REtention - already a float/pct
-                RuckWin_diff = row['Lineout_Win_Pct'] - new_row['Lineout_Win_Pct']
-
-                # LO Win
-                LOWin_diff = row['Ruck_retention'] - new_row['Ruck_retention']
-
-                # Scrum Win Scrum_Win_Pct
-                ScrumWin_diff = row['Scrum_Win_Pct'] - new_row['Scrum_Win_Pct']
-
-                # Create a new now with the difference values
-                # Add 'Cards_diff' back in later
-                sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
-
-            if new_row['Team'] == 'USA':
-                # Get match, date, etc., values
-                opp = row['Team']
-                #date = row['Date']
-                tourn = row['Tournament']
-                #match = row['Match']
-                #Possession Time
-                TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
-                PossessionUSA = float(new_row['Possession Time']*100)/TotPossTime
-                PossessionOpp = float(row['Possession Time']*100)/TotPossTime
-                posess_time_diff = PossessionUSA - PossessionOpp
-
-                # Scores
-                TotScores = float(row['Scores']) + float(new_row['Scores'])
-                ScoresUSA = float(new_row['Scores']*100)/TotScores
-                ScoresOpp = float(row['Scores']*100)/TotScores
-                scores_diff = ScoresUSA - ScoresOpp
-
-                # Tries
-                TotTries = float(row['Tries']) + float(new_row['Tries'])
-                TriesUSA = float(new_row['Tries']*100)/TotTries
-                TriesOpp = float(row['Tries']*100)/TotTries
-                tries_diff = TriesUSA - TriesOpp
-
-                # Conversions - already a float/pct
-                conv_diff = new_row['Conversions'] - row['Conversions']
-
-                # Passes
-                TotPasses = float(row['Passes']) + float(new_row['Passes'])
-                PassesUSA = float(new_row['Passes']*100)/TotPasses
-                PassesOpp = float(row['Passes']*100)/TotPasses
-                passes_diff = PassesUSA - PassesOpp
-
-                # Contestable_KO_Regained_pct - already a float
-                kopct_diff = row['Contestable_Restart_Win_Pct'] - new_row['Contestable_Restart_Win_Pct']
-
-                # Pen-FK
-                TotPenFk = float(row['Pens_Frees Against']) + float(new_row['Pens_Frees Against'])
-                PenFkUSA = float(new_row['Pens_Frees Against']*100)/TotPenFk
-                PenFkOpp = float(row['Pens_Frees Against']*100)/TotPenFk
-                PenFk_diff = PenFkUSA - PenFkOpp
-
-                # Ruck-Maul
-                TotRM = float(row['Ruck_Maul']) + float(new_row['Ruck_Maul'])
-                RMUSA = float(new_row['Ruck_Maul']*100)/TotRM
-                RMOpp = float(row['Ruck_Maul']*100)/TotRM
-                RM_diff = RMUSA - RMOpp
-
-                # Cards
-                TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
-                CardsUSA = float(new_row['Yellow_Red Cards']*100)/TotCards
-                CardsOpp = float(row['Yellow_Red Cards']*100)/TotCards
-                Cards_diff = CardsUSA - CardsOpp
-
-                # Ruck REtention - already a float/pct
-                RuckWin_diff = new_row['Lineout_Win_Pct'] - row['Lineout_Win_Pct']
-
-                # LO Win
-                LOWin_diff = new_row['Ruck_retention'] - row['Ruck_retention']
-
-                # Scrum Win Scrum_Win_Pct
-                ScrumWin_diff = new_row['Scrum_Win_Pct'] - row['Scrum_Win_Pct']
-
-                # Create a new now with the difference values
-                # Add 'Cards_diff' back in later
-                sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+# =============================================================================
+# CONDUCT 'DIFF' OPERATIONS, CREATE NEW DATAFRAME
+#
+# Create new dataframe to hold diff values
+#
+# =============================================================================
+# removed 'Date' and 'Match',
+sub = pd.DataFrame(columns=['Opp', 'Tournament', 'Poss_Time_Diff', 'Score_Diff', 'Conv_Diff', 'Tries_Diff', 'Passes_Diff', 'Contestable_KO_Win_pct_Diff', 'PenFK_Against_Diff', 'RuckMaul_Diff', 'Ruck_Win_pct_Diff', 'Cards_diff', 'Lineout_Win_Pct_Diff','Scrum_Win_Pct_Diff'])
 
 
-    # Write the Dataframe to a CSV
-    #FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
+for index, row in FinalDF.iterrows():
+     if index % 2 == 0:
+        new_row = FinalDF.iloc[index+1]
+        if row['Team'] == "USA":
+            # Get match, date, etc., values
+            opp = new_row['Team']
+            #date = new_row['Date']
+            tourn = new_row['Tournament']
+            # match = new_row['Match']
+            #Possession Time
+            TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
+            PossessionUSA = float(row['Possession Time']*100)/TotPossTime
+            PossessionOpp = float(new_row['Possession Time']*100)/TotPossTime
+            posess_time_diff = PossessionUSA - PossessionOpp
 
-    sub.to_csv("../data/output/final_excel_sub_df.csv", header=True, index=False)
+            # Scores
+            TotScores = float(row['Scores']) + float(new_row['Scores'])
+            ScoresUSA = float(row['Scores']*100)/TotScores
+            ScoresOpp = float(new_row['Scores']*100)/TotScores
+            scores_diff = ScoresUSA - ScoresOpp
+
+            # Tries
+            TotTries = float(row['Tries']) + float(new_row['Tries'])
+            TriesUSA = float(row['Tries']*100)/TotTries
+            TriesOpp = float(new_row['Tries']*100)/TotTries
+            tries_diff = TriesUSA - TriesOpp
+
+            # Conversions - already a float/pct
+            conv_diff = row['Conversions'] - new_row['Conversions']
+
+            # Passes
+            TotPasses = float(row['Passes']) + float(new_row['Passes'])
+            PassesUSA = float(row['Passes']*100)/TotPasses
+            PassesOpp = float(new_row['Passes']*100)/TotPasses
+            passes_diff = PassesUSA - PassesOpp
+
+            # Contestable_KO_Regained_pct - already a float
+            kopct_diff = row['Contestable_Restart_Win_Pct'] -  new_row['Contestable_Restart_Win_Pct']
+
+            # Pen-FK
+            TotPenFk = float(row['Pens_Frees Against']) + float(new_row['Pens_Frees Against'])
+            PenFkUSA = float(row['Pens_Frees Against']*100)/TotPenFk
+            PenFkOpp = float(new_row['Pens_Frees Against']*100)/TotPenFk
+            PenFk_diff = PenFkUSA - PenFkOpp
+
+            # Ruck-Maul
+            TotRM = float(row['Ruck_Maul']) + float(new_row['Ruck_Maul'])
+            RMUSA = float(row['Ruck_Maul']*100)/TotRM
+            RMOpp = float(new_row['Ruck_Maul']*100)/TotRM
+            RM_diff = RMUSA - RMOpp
+
+            # Cards
+            TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
+            CardsUSA = float(row['Yellow_Red Cards']*100)/TotCards
+            CardsOpp = float(new_row['Yellow_Red Cards']*100)/TotCards
+            Cards_diff = CardsUSA - CardsOpp
+
+            # Ruck REtention - already a float/pct
+            RuckWin_diff = row['Lineout_Win_Pct'] - new_row['Lineout_Win_Pct']
+
+            # LO Win
+            LOWin_diff = row['Ruck_retention'] - new_row['Ruck_retention']
+
+            # Scrum Win Scrum_Win_Pct
+            ScrumWin_diff = row['Scrum_Win_Pct'] - new_row['Scrum_Win_Pct']
+
+            # Create a new now with the difference values
+            # Add 'Cards_diff' back in later
+            sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+
+        if new_row['Team'] == 'USA':
+            # Get match, date, etc., values
+            opp = row['Team']
+            #date = row['Date']
+            tourn = row['Tournament']
+            #match = row['Match']
+            #Possession Time
+            TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
+            PossessionUSA = float(new_row['Possession Time']*100)/TotPossTime
+            PossessionOpp = float(row['Possession Time']*100)/TotPossTime
+            posess_time_diff = PossessionUSA - PossessionOpp
+
+            # Scores
+            TotScores = float(row['Scores']) + float(new_row['Scores'])
+            ScoresUSA = float(new_row['Scores']*100)/TotScores
+            ScoresOpp = float(row['Scores']*100)/TotScores
+            scores_diff = ScoresUSA - ScoresOpp
+
+            # Tries
+            TotTries = float(row['Tries']) + float(new_row['Tries'])
+            TriesUSA = float(new_row['Tries']*100)/TotTries
+            TriesOpp = float(row['Tries']*100)/TotTries
+            tries_diff = TriesUSA - TriesOpp
+
+            # Conversions - already a float/pct
+            conv_diff = new_row['Conversions'] - row['Conversions']
+
+            # Passes
+            TotPasses = float(row['Passes']) + float(new_row['Passes'])
+            PassesUSA = float(new_row['Passes']*100)/TotPasses
+            PassesOpp = float(row['Passes']*100)/TotPasses
+            passes_diff = PassesUSA - PassesOpp
+
+            # Contestable_KO_Regained_pct - already a float
+            kopct_diff = row['Contestable_Restart_Win_Pct'] - new_row['Contestable_Restart_Win_Pct']
+
+            # Pen-FK
+            TotPenFk = float(row['Pens_Frees Against']) + float(new_row['Pens_Frees Against'])
+            PenFkUSA = float(new_row['Pens_Frees Against']*100)/TotPenFk
+            PenFkOpp = float(row['Pens_Frees Against']*100)/TotPenFk
+            PenFk_diff = PenFkUSA - PenFkOpp
+
+            # Ruck-Maul
+            TotRM = float(row['Ruck_Maul']) + float(new_row['Ruck_Maul'])
+            RMUSA = float(new_row['Ruck_Maul']*100)/TotRM
+            RMOpp = float(row['Ruck_Maul']*100)/TotRM
+            RM_diff = RMUSA - RMOpp
+
+            # Cards
+            TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
+            CardsUSA = float(new_row['Yellow_Red Cards']*100)/TotCards
+            CardsOpp = float(row['Yellow_Red Cards']*100)/TotCards
+            Cards_diff = CardsUSA - CardsOpp
+
+            # Ruck REtention - already a float/pct
+            RuckWin_diff = new_row['Lineout_Win_Pct'] - row['Lineout_Win_Pct']
+
+            # LO Win
+            LOWin_diff = new_row['Ruck_retention'] - row['Ruck_retention']
+
+            # Scrum Win Scrum_Win_Pct
+            ScrumWin_diff = new_row['Scrum_Win_Pct'] - row['Scrum_Win_Pct']
+
+            # Create a new now with the difference values
+            # Add 'Cards_diff' back in later
+            sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+
+
+# Write the Dataframe to a CSV
+#FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
+
+sub.to_csv("../data/output/final_excel_sub_df.csv", header=True, index=False)
 
     # Append each match to FinalDF
     #FinalDF = FinalDF.append(usadf, ignore_index=True)
