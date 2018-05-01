@@ -191,7 +191,7 @@ FinalDF.to_csv("../data/output/all_Excel_FinalDF_matches.csv", header=True, inde
 #
 # =============================================================================
 # removed 'Date' and 'Match',
-sub = pd.DataFrame(columns=['Opp', 'Tournament', 'Poss_Time_Diff', 'Score_Diff', 'Conv_Diff', 'Tries_Diff', 'Passes_Diff', 'Contestable_KO_Win_pct_Diff', 'PenFK_Against_Diff', 'RuckMaul_Diff', 'Ruck_Win_pct_Diff', 'Cards_diff', 'Lineout_Win_Pct_Diff','Scrum_Win_Pct_Diff'])
+sub = pd.DataFrame(columns=['MatchID','Opp', 'Tournament', 'Poss_Time_Diff', 'Score_Diff', 'Conv_Diff', 'Tries_Diff', 'Passes_Diff', 'Contestable_KO_Win_pct_Diff', 'PenFK_Against_Diff', 'RuckMaul_Diff', 'Ruck_Win_pct_Diff', 'Cards_diff', 'Lineout_Win_Pct_Diff','Scrum_Win_Pct_Diff'])
 
 for index, row in FinalDF.iterrows():
       if index % 2 == 0:
@@ -201,7 +201,7 @@ for index, row in FinalDF.iterrows():
              opp = new_row['Team']
              #date = new_row['Date']
              tourn = new_row['Tournament']
-             # match = new_row['Match']
+             match = new_row['MatchID']
              #Possession Time
              TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
              PossessionUSA = float(row['Possession Time']*100)/TotPossTime
@@ -261,14 +261,14 @@ for index, row in FinalDF.iterrows():
 
              # Create a new row with the difference values
              # Add 'Cards_diff' back in later
-             sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+             sub.loc[index] = (match, opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
-         if new_row['Team'] == 'USA':
+         if new_row['Team'] == "USA":
              # Get match, date, etc., values
              opp = row['Team']
              #date = row['Date']
              tourn = row['Tournament']
-             #match = row['Match']
+             match = row['MatchID']
              #Possession Time
              TotPossTime = float(row['Possession Time']) + float(new_row['Possession Time'])
              PossessionUSA = float(new_row['Possession Time']*100)/TotPossTime
@@ -328,11 +328,11 @@ for index, row in FinalDF.iterrows():
 
              # Create a new now with the difference values
              # Add 'Cards_diff' back in later
-             sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+             sub.loc[index] = (match, opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
 # =============================================================================
 # Write the Dataframe to a CSV
-FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
+# FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
 
 sub.to_csv("../data/output/final_excel_sub_df.csv", header=True, index=False)
 
