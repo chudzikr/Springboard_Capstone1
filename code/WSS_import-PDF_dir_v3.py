@@ -8,7 +8,6 @@ mypath = '/Users/admin/Dropbox/Springboard_DataScience/Capstone1/data/matchdata/
 onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
 
 # Create an empty dataframe with columns to store all appended matches
-# BE SURE TO UPDATE WITH NEW COLUMNS
 FinalDF = pd.DataFrame()
 #FinalDF = pd.DataFrame(columns = ['Tournament', 'Match', 'Team', 'Date', 'Possession Time', 'Possessions', 'Avg Possession Time', 'Scores', 'Tries', 'Conversions', 'Tries Conceded', 'Points Conceded', 'Passes', 'Tackle_Ruck_Mauls', 'Retained', 'Lost', 'T-Overs Won', 'Tackle Only-Defence', 'Mauls', 'Kicks', 'General Play T/Overs', 'Lineouts', 'Own Won', 'Own Lost', 'Scrums', 'Own Won', 'Own Lost', 'Restarts', 'Long', 'Short', 'Regained', 'Errors', 'Pens_Frees Against', 'Ruck_Maul', 'Set Piece', 'General Play', 'Foul Play', 'Yellow_Red Cards'])
 
@@ -216,12 +215,12 @@ FinalDF = FinalDF.drop(['Retained', 'Tackle_Ruck_Mauls','T-Overs Won', 'General 
 
 FinalDF = FinalDF[['Team', 'Date','Tournament', 'Match', 'Possession Time', 'Scores', 'Tries', 'Conversions', 'Passes',  'Contestable_KO_Regained_pct', 'Pens_Frees Against', 'Ruck_Maul', 'Yellow_Red Cards', 'TurnoversConceded', 'Ruck_retention', 'Lineout_Win_Pct','Scrum_Win_Pct']]
 
-# Write the Dataframe to a CSV
+# Write the Dataframe to a CSV to keep a file of initial match output
 FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
 
 # Get the differnce between the USA and their opposition
 # If 'Team'='USA' AND TOURNAMENT and MATCH are ==
-#iteate through the rows of the dataframe and get the next row relative to the current row
+#iterate through the rows of the dataframe and get the next row relative to the current row
 #if the current row is USA then compute the possesion time of current row (USA) and next row relative to current row
 #that is of opponent, find the possesion time relative to USA and put it in a new column called as PossessionTimeRelativeUSA
 #In the same manner perform the calculation for other features
@@ -302,7 +301,7 @@ for index, row in FinalDF.iterrows():
            # Add 'Cards_diff' back in later
            sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
-       if new_row['Team'] == 'USA':
+       if new_row['Team'] == "USA":
            # Get match, date, etc., values
            # Removed 'date' and 'match' for consistency, as they are not available in Excel reports
            opp = row['Team']
@@ -371,4 +370,4 @@ for index, row in FinalDF.iterrows():
            # Add 'Cards_diff' back in later
            sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
-sub.to_csv("../data/output/final_df_v1.csv", header=True, index=False)
+sub.to_csv("../data/output/final_pdf_df.csv", header=True, index=False)
