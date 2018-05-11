@@ -339,12 +339,12 @@ for index, row in FinalDF.iterrows():
              sub.loc[index] = (match, opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
 # =============================================================================
-
+#FINAL CLEANUP
 #Drop the MatchID column before outputting CSV
 sub.drop(['MatchID'], axis=1, inplace=True)
 
-# Write the final 'Diff' Dataframe to a CSV
-#sub.to_csv("../data/output/final_excel_sub_df.csv", header=True, index=False)
+# Replace NaN's with zero
+sub.fillna(value=0, inplace=True)
 
 # write/append dataframe to CSV file
 # Use the 'to_csv' write mode of 'a' to append a new DF to an existing CSV

@@ -92,32 +92,6 @@ for i in onlyfiles:
     df2.columns = newcols
     df2
 
-    # # new, combined columns
-    # [
-    # 'Tournament',
-    # 'Match',
-    # 'Team',
-    # 'Date',
-    # 'PossessionTime',
-    # 'Points',
-    # 'Tries',
-    # 'ConversionRate',
-    # 'Passes',
-    # 'Attacking_Ruck-Maul',
-    # 'Own_Rucks_Won',
-    # 'GP_TO',
-    # 'TO_Won',
-    # 'Lineouts',
-    # 'Lineouts_Won',
-    # 'Scrums',
-    # 'Scrums_Won',
-    # 'Contestable_Restarts',
-    # 'Contestable_Restarts_Won',
-    # 'Pen-FK_Conceded',
-    # 'RM_Penalties',
-    # 'Cards'
-    # ]
-
     # Keep only 'Total' rows, so effectively H1, H2 Rows are dropped
     df2 = df2[df2.loc[:,'col2'] == 'Total']
     df2
@@ -369,5 +343,8 @@ for index, row in FinalDF.iterrows():
            # Create a new now with the difference values
            # Add 'Cards_diff' back in later
            sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
+
+# Replace NaN's with zero
+sub.fillna(value=0, inplace=True)
 
 sub.to_csv("../data/output/final_diffs_all.csv", header=True, index=False)
