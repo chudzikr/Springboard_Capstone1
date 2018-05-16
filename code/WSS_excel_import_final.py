@@ -1,20 +1,7 @@
-
 # coding: utf-8
-
 # ## Import World Rugby 7s World Series Analysis Reports ##
-# Import Analysis Reports (Excel) from each stop on the 2018 7s World Series
+# Import 2017-18 Analysis Reports (Excel) from each stop on the 2018 7s World Series
 
-# =============================================================================
-# TO DO  - 4/25
-# Solve "Division by Zero" issue
-# Consolidate column names
-# Create Diff calculations
-# =============================================================================
-
-# In[44]:
-
-
-# You can use pandas' ExcelFile parse method to read Excel sheets, see io docs:
 import pandas as pd
 import numpy as np
 from os import listdir
@@ -33,13 +20,8 @@ for i in onlyfiles:
     xls = pd.ExcelFile(mypath + i)
     df = xls.parse('Raw Data', skiprows=6, index_col=None, na_values=['NaN'])
 
-
-
-    # In[46]:
-
     df.columns = ['col1', 'Team', 'Opposition', 'Total PointsScored', 'Total PointsConceded', 'Total TriesScored', 'Total TriesConceded', 'Try Scoring Rate(1 every x secs)', 'Try Conceding Rate(1 every x secs)', 'Tries Scored Build-Up(No Ruck/Maul)', 'Tries Conceded Build-Up(No Ruck/Maul)', 'Opp22m Entries', 'Opp22m Entry Rate(1 every  secs)', 'Own22m Entries', 'Own22m Entry Rate(1 every x secs)', 'Tries Scoredper Opp22m Entry', 'Tries Concededper Own22m Entry', 'Possession Time(Own)', 'Possession Time(Opp)', 'Passes', 'Passing Rate(1 every x secs)', 'Rucks Attack', 'Rucking RateAttack (secs)', 'RucksDefence', '% Ruck SuccessOwn', 'Own RucksWon per Match', '% Ruck SuccessOpp', 'Opp RucksWon per Match', 'TurnoversReceived', 'TurnoversConceded', 'TurnoverDifferential', 'OwnContestable Restarts', 'Own ContestableRestarts Regained', 'OppContestable Restarts', 'Opp ContestableRestarts Received', 'Total ScrumsOwn Feed', 'Scrum SuccessOwn Feed', 'Total LineoutsOwn Throw', 'Lineout SuccessOwn Throw', 'Penalty/FKConceded', 'TRM PenaltyConceded', 'Cards']
 
-    # In[47]:
     # drop first column
     df.drop(df.columns[0], axis=1, inplace=True)
 
@@ -50,18 +32,15 @@ for i in onlyfiles:
     df = df[df['Team'] != 'Average'] # Remove the 'Average' row
     df = df[df['Team'] != 'Overall Average'] # Remove the 'Average' row
 
-
-    # In[48]:
     # pseudo: if Team = 'NaN', grab the value from the previous row using .fillna(method='ffill') using forward fill
     # Need to run on only 'Team' column
     df[['Team']] = df[['Team']].fillna(method='ffill')
 
-    # In[51]:
     # Select only matches with the USA playing
     usadf = df.loc[(df['Team'] == 'USA') | (df['Opposition'] == 'USA')]
     # need to combine for for/against or only select USA matches, i.e.,
     # usadf = df.loc[(df['Team'] == 'USA')]
-#
+
     # Create new column, 'TotalPoints', to use as an aid to identify each match
     usadf['TotalPoints'] = usadf['Total PointsScored'] + usadf['Total PointsConceded']
 
@@ -71,7 +50,7 @@ for i in onlyfiles:
     usadf = usadf.reindex(columns = cols)
 
 # =============================================================================
-    # ## Calculations/Derivations
+    # Calculations/Derivations
 
     def convertSecs(x):
         """Convert possession time from string to seconds"""
@@ -89,18 +68,8 @@ for i in onlyfiles:
     usadf.loc[:,'Possession Time(Own)'] = usadf.loc[:,'Possession Time(Own)'].map(convertSecs)
     usadf.loc[:,'Possession Time(Opp)'] = usadf.loc[:,'Possession Time(Opp)'].map(convertSecs)
 
-    # In[ ]:
-
-    # Fill remaining NaNs with 0
-    # df[2:31] = df[2:31].fillna(value=0.0)
-
-
-    # In[52]:
-
     # ### Column labels ###
     # change col names to match the column names in the PDF import dataframe.
-
-    # =============================================================================
     usadf = usadf.rename(columns = {
         'Total PointsScored':'Scores',
         'Possession Time(Own)':'Possession Time',
@@ -117,15 +86,14 @@ for i in onlyfiles:
     # Get toournament name
     tournament = name.split()
     usadf['Tournament'] = tournament[0] + '_' + tournament[3] + '_' + tournament[4]
-    # Try replacing '0 with 'NaN'
+    # Try replacing '0s with 'NaN'
     usadf.replace(0, 'NaN', inplace=True)
     usadf = usadf.replace('NaN', np.nan)
 
+    # Replace NaN's with zero
+    #usadf.fillna(value=0, inplace=True)
+
     # Calculate conversions
-    # used .astype() because values weren't retaining the datatype
-    # usadf['Tries'] = usadf['Tries'].astype(int, copy=False)
-    #usadf['Tries'] = usadf['Tries'].astype(int, copy=False)
-    #usadf['Scores'] = usadf['Scores'].astype(int, copy=False)
     possConv = usadf['Tries']  # number of possible conversions, converted from str to int
     pts = usadf['Scores']  # total points, , converted from str to int
     convPts = (pts - (possConv * 5))
@@ -146,7 +114,9 @@ for i in onlyfiles:
     # =============================================================================
 
     # # check how to handle Div by zero issue in 'Contestable_Restart_Win_Pct', possibly others
-    usadf['Contestable_Restart_Win_Pct'] =  usadf['Regained'] / usadf['Short']
+    #usadf['Contestable_Restart_Win_Pct'] =  usadf['Regained'] / usadf['Short']
+    # Change method of calculating Restarts Gained, to give them more weight
+    usadf['Contestable_Restart_Win_Pct'] = 100 * (usadf['Regained'] / usadf['Short'])
     usadf['Lineout_Win_Pct'] =  usadf['Lineout SuccessOwn Throw'] / usadf['Total LineoutsOwn Throw']
     usadf['Scrum_Win_Pct'] =  usadf['Scrum SuccessOwn Feed'] /  usadf['Total ScrumsOwn Feed']
 
@@ -183,12 +153,14 @@ FinalDF = FinalDF.sort_values(by=['MatchID'])
 
 FinalDF = FinalDF[['Team', 'Opposition', 'MatchID', 'TotalPoints', 'Tournament', 'Conversions', 'Contestable_Restart_Win_Pct', 'Lineout_Win_Pct', 'Scrum_Win_Pct', 'Scores', 'Tries', 'Possession Time', 'Passes', 'Rucks Attack', 'Ruck_retention', 'T-Overs Won', 'Pens_Frees Against', 'Ruck_Maul', 'Yellow_Red Cards']]
 
+# Replace NaN's with zero
+FinalDF.fillna(value=0, inplace=True)
+
 # Write the Dataframe to a CSV to keep a file of initial match output
 FinalDF.to_csv("../data/output/all_Excel_FinalDF_matches.csv", header=True, index=False)
 
 # =============================================================================
 # CONDUCT 'DIFF' OPERATIONS, CREATE NEW DATAFRAME
-#
 # Create new dataframe to hold diff values
 #
 # =============================================================================
@@ -243,23 +215,30 @@ for index, row in FinalDF.iterrows():
              PenFkOpp = float(new_row['Pens_Frees Against']*100)/TotPenFk
              PenFk_diff = PenFkUSA - PenFkOpp
 
-             # Ruck-Maul
-             TotRM = float(row['Ruck_Maul']) + float(new_row['Ruck_Maul'])
-             RMUSA = float(row['Ruck_Maul']*100)/TotRM
-             RMOpp = float(new_row['Ruck_Maul']*100)/TotRM
+             # Ruck-Maul - # Ruck-Maul- don't need to coerce to a float
+             TotRM = row['Ruck_Maul'] + new_row['Ruck_Maul']
+             RMUSA = row['Ruck_Maul']*100/TotRM
+             RMOpp = new_row['Ruck_Maul']*100/TotRM
              RM_diff = RMUSA - RMOpp
 
-             # Cards
-             TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
-             CardsUSA = float(row['Yellow_Red Cards']*100)/TotCards
-             CardsOpp = float(new_row['Yellow_Red Cards']*100)/TotCards
-             Cards_diff = CardsUSA - CardsOpp
+             # OLD Method for 'Cards'
+#             TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
+#             CardsUSA = float(row['Yellow_Red Cards']*100)/TotCards
+#             CardsOpp = float(new_row['Yellow_Red Cards']*100)/TotCards
+#             Cards_diff = CardsUSA - CardsOpp
+
+             # Cards with a factor of -50 applied
+             CardsUSA = row['Yellow_Red Cards']
+             CardsOpp = new_row['Yellow_Red Cards']
+             CardsUSA_fac = CardsUSA * -50
+             CardsOpp_fac = CardsOpp * -50
+             Cards_diff = CardsUSA_fac - CardsOpp_fac
 
              # Ruck REtention - already a float/pct
-             RuckWin_diff = row['Lineout_Win_Pct'] - new_row['Lineout_Win_Pct']
+             LOWin_diff = row['Lineout_Win_Pct'] - new_row['Lineout_Win_Pct']
 
              # LO Win
-             LOWin_diff = row['Ruck_retention'] - new_row['Ruck_retention']
+             RuckWin_diff = row['Ruck_retention'] - new_row['Ruck_retention']
 
              # Scrum Win Scrum_Win_Pct
              ScrumWin_diff = row['Scrum_Win_Pct'] - new_row['Scrum_Win_Pct']
@@ -313,23 +292,30 @@ for index, row in FinalDF.iterrows():
              PenFkOpp = float(row['Pens_Frees Against']*100)/TotPenFk
              PenFk_diff = PenFkUSA - PenFkOpp
 
-             # Ruck-Maul
-             TotRM = float(row['Ruck_Maul']) + float(new_row['Ruck_Maul'])
-             RMUSA = float(new_row['Ruck_Maul']*100)/TotRM
-             RMOpp = float(row['Ruck_Maul']*100)/TotRM
+             # Ruck-Maul- don't need to coerce to a float
+             TotRM = row['Ruck_Maul'] + new_row['Ruck_Maul']
+             RMUSA = new_row['Ruck_Maul']*100/TotRM
+             RMOpp = row['Ruck_Maul']*100/TotRM
              RM_diff = RMUSA - RMOpp
 
-             # Cards
-             TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
-             CardsUSA = float(new_row['Yellow_Red Cards']*100)/TotCards
-             CardsOpp = float(row['Yellow_Red Cards']*100)/TotCards
-             Cards_diff = CardsUSA - CardsOpp
+             # OLD Method for 'Cards'
+             #TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
+             #CardsUSA = float(new_row['Yellow_Red Cards']*100)/TotCards
+             #CardsOpp = float(row['Yellow_Red Cards']*100)/TotCards
+             #Cards_diff = CardsUSA - CardsOpp
+
+             # Cards with a factor of -50 applied
+             CardsOpp = row['Yellow_Red Cards']
+             CardsUSA = new_row['Yellow_Red Cards']
+             CardsUSA_fac = CardsUSA * -50
+             CardsOpp_fac = CardsOpp * -50
+             Cards_diff = CardsUSA_fac - CardsOpp_fac
 
              # Ruck REtention - already a float/pct
-             RuckWin_diff = new_row['Lineout_Win_Pct'] - row['Lineout_Win_Pct']
+             LOWin_diff = new_row['Lineout_Win_Pct'] - row['Lineout_Win_Pct']
 
              # LO Win
-             LOWin_diff = new_row['Ruck_retention'] - row['Ruck_retention']
+             RuckWin_diff = new_row['Ruck_retention'] - row['Ruck_retention']
 
              # Scrum Win Scrum_Win_Pct
              ScrumWin_diff = new_row['Scrum_Win_Pct'] - row['Scrum_Win_Pct']
