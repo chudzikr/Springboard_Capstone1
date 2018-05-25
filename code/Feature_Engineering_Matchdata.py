@@ -5,6 +5,7 @@
 # @todo
 # * Create a Result column for Win/Loss
 # * Create new columns for 0%, 20%, 40%, 60%, 80%
+# * Create "Series Year", i.e., 2017-18, based on Date.  Need to account for tournaments straddling years: i.e., Dec 15 tournament belongs in 2015-16 tournament year. Use time series analysis.
 
 # In[ ]:
 
@@ -84,28 +85,28 @@ for index, row in df.iterrows():
         under75 = row['50 - 75'] = float(0)
         under100 = row['75 - 100'] = float(0)
 
-    elif row['Contestable_Restart_Win_Pct'] >= 0 and row['Contestable_Restart_Win_Pct'] <= 25.0:
+    elif row['Contestable_Restart_Win_Pct'] > 0 and row['Contestable_Restart_Win_Pct'] <= 25.0:
         zero = row['0'] = float(0)
         under25 = row['0 - 25'] = float(0.25*50)
         under50 = row['25 - 50'] = float(0)
         under75 = row['50 - 75'] = float(0)
         under100 = row['75 - 100'] = float(0)
 
-    elif row['Contestable_Restart_Win_Pct'] >= 25.0 and row['Contestable_Restart_Win_Pct'] <= 50.0:
+    elif row['Contestable_Restart_Win_Pct'] > 25.0 and row['Contestable_Restart_Win_Pct'] <= 50.0:
         zero = row['0'] = float(0)
         under25 = row['0 - 25'] = float(0)
         under50 = row['25 - 50'] = float(0.50*50)
         under75 = row['50 - 75'] = float(0)
         under100 = row['75 - 100'] = float(0)
 
-    elif row['Contestable_Restart_Win_Pct'] >= 50.0 and row['Contestable_Restart_Win_Pct'] <= 75.0:
+    elif row['Contestable_Restart_Win_Pct'] > 50.0 and row['Contestable_Restart_Win_Pct'] <= 75.0:
         zero = row['0'] = float(0)
         under25 = row['0 - 25'] = float(0)
         under50 = row['25 - 50'] = float(0)
         under75 = row['50 - 75'] = float(0.75*50)
         under100 = row['75 - 100'] = float(0)
 
-    elif row['Contestable_Restart_Win_Pct'] >= 75.0 and row['Contestable_Restart_Win_Pct'] <= 100.0:
+    elif row['Contestable_Restart_Win_Pct'] > 75.0 and row['Contestable_Restart_Win_Pct'] <= 100.0:
         zero = row['0'] = float(0)
         under25 = row['0 - 25'] = float(0)
         under50 = row['25 - 50'] = float(0)
