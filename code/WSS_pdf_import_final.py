@@ -1,4 +1,7 @@
+# =============================================================================
 # Import data from 2016-17 HSBC World Sevens Series Match Data PDFs
+# *** IMPORTANT!***   Run this file first, and Excel Import file second when processing the data.
+# =============================================================================
 
 import pandas as pd
 from os import listdir
@@ -161,7 +164,8 @@ FinalDF['TurnoversConceded'] = FinalDF['General Play T/Overs']
 FinalDF['Ruck_retention'] = FinalDF['Retained'] / FinalDF['Tackle_Ruck_Mauls']
 FinalDF['Lineout_Win_Pct'] = FinalDF['Lineouts Won'] / FinalDF['Lineouts']
 FinalDF['Scrum_Win_Pct'] = FinalDF['Scrums Won'] / FinalDF['Scrums']
-    # Change method of calculating Restarts Gained, to give them more weight
+
+# Change method of calculating Restarts Gained, to give them more weight
 FinalDF['Contestable_Restart_Win_Pct'] = 100 * (FinalDF['Regained'] / FinalDF['Short'])
 
 # Drop columns used to create derived columns
@@ -246,12 +250,6 @@ for index, row in FinalDF.iterrows():
            CardsOpp_fac = CardsOpp * -50
            Cards_diff = CardsUSA_fac - CardsOpp_fac
 
-           # Cards
-#           TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
-#           CardsUSA = float(row['Yellow_Red Cards']*100)/TotCards
-#           CardsOpp = float(new_row['Yellow_Red Cards']*100)/TotCards
-#           Cards_diff = CardsUSA - CardsOpp
-
            # LO Win
            LOWin_diff = row['Lineout_Win_Pct'] - new_row['Lineout_Win_Pct']
 
@@ -321,12 +319,6 @@ for index, row in FinalDF.iterrows():
            CardsUSA_fac = CardsUSA * -50
            CardsOpp_fac = CardsOpp * -50
            Cards_diff = CardsUSA_fac - CardsOpp_fac
-
-#           # Cards
-#           TotCards = float(row['Yellow_Red Cards']) + float(new_row['Yellow_Red Cards'])
-#           CardsUSA = float(new_row['Yellow_Red Cards']*100)/TotCards
-#           CardsOpp = float(row['Yellow_Red Cards']*100)/TotCards
-#           Cards_diff = CardsUSA - CardsOpp
 
            # LO Win
            LOWin_diff = new_row['Lineout_Win_Pct'] - row['Lineout_Win_Pct']

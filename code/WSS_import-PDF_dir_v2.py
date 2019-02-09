@@ -288,5 +288,5 @@ for index, row in FinalDF.iterrows():
 # =============================================================================
 
 # Write the Dataframe to a CSV
-#FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
+FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
 

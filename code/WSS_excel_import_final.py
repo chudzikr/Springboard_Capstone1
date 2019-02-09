@@ -1,6 +1,9 @@
+# =============================================================================
 # coding: utf-8
-# ## Import World Rugby 7s World Series Analysis Reports ##
+# Import World Rugby 7s World Series Analysis Reports ##
 # Import 2017-18 Analysis Reports (Excel) from each stop on the 2018 7s World Series
+# *** IMPORTANT!***  Run this file first, and Excel Import file second when processing the data
+# =============================================================================
 
 import pandas as pd
 import numpy as np
@@ -157,6 +160,7 @@ FinalDF = FinalDF[['Team', 'Opposition', 'MatchID', 'TotalPoints', 'Tournament',
 FinalDF.fillna(value=0, inplace=True)
 
 # Write the Dataframe to a CSV to keep a file of initial match output
+# FinalDF.to_csv("../data/output/all_Excel_FinalDF_matches.csv", mode='a', header=False, index=False)
 FinalDF.to_csv("../data/output/all_Excel_FinalDF_matches.csv", header=True, index=False)
 
 # =============================================================================
@@ -336,3 +340,4 @@ sub.fillna(value=0, inplace=True)
 # Use the 'to_csv' write mode of 'a' to append a new DF to an existing CSV
 # You can append to a csv by opening the file in append mode, t
 sub.to_csv('../data/output/final_diffs_all.csv', mode='a', header=False, index=False)
+# sub.to_csv('../data/output/final_diffs_all.csv', header=True, index=False)

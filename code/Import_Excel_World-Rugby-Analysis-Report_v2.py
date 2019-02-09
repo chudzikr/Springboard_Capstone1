@@ -339,18 +339,14 @@ for index, row in FinalDF.iterrows():
              sub.loc[index] = (match, opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
 # =============================================================================
-# Write the Dataframe to a CSV
-# FinalDF.to_csv("../data/output/all_7s_matches.csv", header=True, index=False)
+#FINAL CLEANUP
+#Drop the MatchID column before outputting CSV
+sub.drop(['MatchID'], axis=1, inplace=True)
 
-sub.to_csv("../data/output/final_excel_sub_df.csv", header=True, index=False)
+# Replace NaN's with zero
+sub.fillna(value=0, inplace=True)
 
-    # Append each match to FinalDF
-#FinalDF = FinalDF.append(usadf, ignore_index=True)
-
-# In[54]:
-
-# write dataframe to CSV file
-# USe the write mode of 'a' to append
-# https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file (see helper function in this page)
-# You can append to a csv by opening the file in append mode, then appending a new DF to it
-#FinalDF.to_csv(path_or_buf='../data/output/worldrugby_game_analysis_all.csv')
+# write/append dataframe to CSV file
+# Use the 'to_csv' write mode of 'a' to append a new DF to an existing CSV
+# You can append to a csv by opening the file in append mode, t
+sub.to_csv('../data/output/final_diffs_all.csv', mode='a', header=False, index=False)

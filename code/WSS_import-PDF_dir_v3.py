@@ -370,4 +370,9 @@ for index, row in FinalDF.iterrows():
            # Add 'Cards_diff' back in later
            sub.loc[index] = (opp, tourn, posess_time_diff, scores_diff, tries_diff, conv_diff, passes_diff, kopct_diff, PenFk_diff, RM_diff, RuckWin_diff, Cards_diff, LOWin_diff, ScrumWin_diff)
 
-sub.to_csv("../data/output/final_pdf_df.csv", header=True, index=False)
+#FINAL CLEANUP
+# Replace NaN's with zero
+sub.fillna(value=0, inplace=True)
+
+#Output final 'diff' data to CSV
+sub.to_csv("../data/output/final_diffs_all.csv", header=True, index=False)

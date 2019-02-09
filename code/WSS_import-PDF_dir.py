@@ -215,6 +215,7 @@ for i in onlyfiles:
 FinalDF['Ruck_retention'] = FinalDF['Retained'] / FinalDF['Tackle_Ruck_Mauls']
 FinalDF['Lineout_Win_Pct'] = FinalDF['Lineouts Won'] / FinalDF['Lineouts']
 FinalDF['Scrum_Win_Pct'] = FinalDF['Scrums Won'] / FinalDF['Scrums']
+FinalDF['Contestable_Restart_Win_Pct'] = FinalDF['Regained'] / FinalDF['Short']
 
 # Drop columns used to create derived columns
 FinalDF = FinalDF.drop(['Retained', 'Tackle_Ruck_Mauls', 'Lineouts Won','Lineouts', 'Scrums Won', 'Scrums', 'Lineouts Lost', 'Scrums Lost'], axis=1)
