@@ -1,4 +1,4 @@
-### Springboard Capstone 1 Project for Springboard Data Science Program
+### Capstone 1 Project for Springboard Data Science Program
 
 
 # Identifying the most important variables influencing a team’s match outcome in Rugby 7s
