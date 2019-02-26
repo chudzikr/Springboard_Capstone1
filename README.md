@@ -6,7 +6,7 @@
 Rob Chudzik
 3/20/18
 
-<span style="color:red">NOTE:</span>  Data files have been removed, as they are proprietary information.  If you require the data for project review purposes, please email Rob.
+**NOTE:**  Data files have been removed, as they are proprietary information.  If you require the data for project review purposes, please email Rob.
 
 ### Problem Statement
 
