@@ -6,6 +6,8 @@
 Rob Chudzik
 3/20/18
 
+**NOTE:**  Data files have been removed, as they are proprietary information.  If you require the data for project review purposes, please email Rob.
+
 ### Problem Statement
 
 In sports team performance analysis, there are a myriad of performance variables that impact a team’s performance and match outcome. The challenge for performance analysts and coaches is to determine which of these variables have the largest impact on a team’s performance and match outcome, i.e., a win or a loss.  
